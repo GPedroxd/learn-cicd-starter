@@ -7,14 +7,13 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
+	"strings"
 	"time"
-
-	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
 type apiConfig struct {
@@ -95,11 +94,9 @@ func main() {
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 
-	portNum, err := strconv.Atoi(port)
-
 	safePort := strings.ReplaceAll(port, "\n", " ")
 	safePort = strings.ReplaceAll(safePort, "\r", " ")
 	log.Printf("Serving on port: %s", safePort)
-	
+
 	log.Fatal(srv.ListenAndServe())
 }
