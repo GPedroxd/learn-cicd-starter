@@ -3,18 +3,17 @@ package main
 import (
 	"database/sql"
 	"embed"
+	"github.com/bootdotdev/learn-cicd-starter/internal/database"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/cors"
+	"github.com/joho/godotenv"
+	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	"io"
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/go-chi/chi"
-	"github.com/go-chi/cors"
-	"github.com/joho/godotenv"
-
-	"github.com/bootdotdev/learn-cicd-starter/internal/database"
-
-	_ "github.com/tursodatabase/libsql-client-go/libsql"
+	"strings"
+	"time"
 )
 
 type apiConfig struct {
@@ -88,11 +87,16 @@ func main() {
 	v1Router.Get("/healthz", handlerReadiness)
 
 	router.Mount("/v1", v1Router)
+
 	srv := &http.Server{
-		Addr:    ":" + port,
-		Handler: router,
+		Addr:              ":" + port,
+		Handler:           router,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 
-	log.Printf("Serving on port: %s\n", port)
+	safePort := strings.ReplaceAll(port, "\n", " ")
+	safePort = strings.ReplaceAll(safePort, "\r", " ")
+	log.Printf("Serving on port: %s", safePort)
+
 	log.Fatal(srv.ListenAndServe())
 }
