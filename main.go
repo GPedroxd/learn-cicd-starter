@@ -11,7 +11,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
-
+	"strconv"
 	"github.com/bootdotdev/learn-cicd-starter/internal/database"
 
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
@@ -90,6 +90,7 @@ func main() {
 	router.Mount("/v1", v1Router)
 
 	portNum, err := strconv.Atoi(port)
+
 	if err != nil || portNum < 1 || portNum > 65535 {
 		log.Fatal("invalid port")
 	}
