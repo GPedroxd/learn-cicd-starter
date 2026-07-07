@@ -89,18 +89,17 @@ func main() {
 
 	router.Mount("/v1", v1Router)
 
-	portNum, err := strconv.Atoi(port)
-
-	if err != nil || portNum < 1 || portNum > 65535 {
-		log.Fatal("invalid port")
-	}
-
 	srv := &http.Server{
 		Addr:              ":" + port,
 		Handler:           router,
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 
-	log.Printf("Serving on port: %s\n", port)
+	portNum, err := strconv.Atoi(port)
+
+	safePort := strings.ReplaceAll(port, "\n", " ")
+	safePort = strings.ReplaceAll(safePort, "\r", " ")
+	log.Printf("Serving on port: %s", safePort)
+	
 	log.Fatal(srv.ListenAndServe())
 }
